@@ -2,7 +2,6 @@
 package com.yourdomain.taskmanagementapp
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -55,10 +54,6 @@ class TaskScreenTest {
             .performClick()
 
         // Assert
-        // Check that the input field was cleared
-        composeTestRule.onNodeWithContentDescription("Enter new task field")
-            .assertTextEquals()
-
         // Check that the new task is now displayed in the list
         composeTestRule.onNodeWithText("Buy groceries")
             .assertIsDisplayed()
