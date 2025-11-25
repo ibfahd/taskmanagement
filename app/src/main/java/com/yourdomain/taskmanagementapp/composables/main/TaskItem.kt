@@ -3,11 +3,13 @@ package com.yourdomain.taskmanagementapp.composables.main
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,30 +17,51 @@ import androidx.compose.ui.unit.dp
 import com.yourdomain.taskmanagementapp.ui.theme.TaskManagementTheme
 
 @Composable
-fun TaskItem(taskName: String, modifier: Modifier = Modifier) {
+fun TaskItem(
+    taskName: String,
+    modifier: Modifier = Modifier, // Best Practice: modifier is the first optional param
+    isCompleted: Boolean = false,   // New State Parameter
+    onCheckedChange: (Boolean) -> Unit = {} // New Event Parameter
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // TODO: Add Checkbox later
+        // The "Fix": Add the Checkbox
+        Checkbox(
+            checked = isCompleted,
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier
+                .semantics {
+                    // This matches the assertion in our test
+                    contentDescription = "Mark task as complete"
+                }
+                // Use testTag for reliable node identification in tests, as recommended
+                // in official Jetpack Compose testing documentation.
+                .testTag("task_checkbox")
+        )
+
         Text(
             text = taskName,
             modifier = Modifier
                 .weight(1f)
-                // Add semantics for screen readers
-                .semantics { contentDescription = "Task: $taskName" },
+                .padding(start = 8.dp)
+                // Update semantics to be more descriptive for accessibility
+                .semantics { contentDescription = "Task name: $taskName" },
             style = MaterialTheme.typography.bodyLarge
         )
-        // TODO: Add Delete button later
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun TaskItemPreview() {
-    TaskManagementTheme { // Make sure this matches your theme name
-        TaskItem(taskName = "Write the first draft")
+    TaskManagementTheme {
+        TaskItem(
+            taskName = "Write the first draft",
+            isCompleted = true
+        )
     }
 }
